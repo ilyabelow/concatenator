@@ -23,9 +23,9 @@ included_hpp = []
 included_stdlib = []
 global_defines = []
 
-def expand(filename):
-    cur_dir = filename[:filename.rfind('/')+1]
-    f = open(filename, 'r')
+def expand(path):
+    cur_dir = path[:path.rfind('/')+1]
+    f = open(path, 'r')
     concatinated = []
     for line in f:
         splited = line.split()
@@ -36,11 +36,11 @@ def expand(filename):
             if first == '#include':
                 # Local includes processing
                 if splited[1][0] == '"':
-                    hpp_name = splited[1][1:-1]
-                    if hpp_name in included_hpp:
+                    hpp_path = cur_dir + splited[1][1:-1]
+                    if hpp_path in included_hpp:
                         continue
-                    included_hpp.append(hpp_name)
-                    concatinated += expand(cur_dir + hpp_name)
+                    included_hpp.append(hpp_path)
+                    concatinated += expand(hpp_path)
                     continue
                 # Stdlib includes processing
                 if line not in included_stdlib:
@@ -60,10 +60,10 @@ def expand(filename):
     f.close()
     # CPP processing
     # To each .hpp or .h file corresponds one cpp with the same name
-    if filename[-3:] == 'hpp' or filename[-1] == 'h':
-        cpp_file = filename[:-3] + 'cpp'
-        if os.path.exists(cpp_file):
-            concatinated += expand(cpp_file)
+    if path[-3:] == 'hpp' or path[-1] == 'h':
+        cpp_path = path[:-3] + 'cpp'
+        if os.path.exists(cpp_path):
+            concatinated += expand(cpp_path)
     return concatinated
 
 done = expand(main)
