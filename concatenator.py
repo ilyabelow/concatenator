@@ -63,7 +63,7 @@ def expand(filename):
     if filename[-3:] == 'hpp' or filename[-1] == 'h':
         cpp_file = filename[:-3] + 'cpp'
         if os.path.exists(cpp_file):
-            concatinated += expand(cur_dir + cpp_file)
+            concatinated += expand(cpp_file)
     return concatinated
 
 done = expand(main)
